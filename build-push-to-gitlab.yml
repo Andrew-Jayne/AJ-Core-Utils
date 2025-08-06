@@ -1,0 +1,25 @@
+stages:
+  - build
+
+variables:
+  DOCKER_REGISTRY: $CI_REGISTRY
+  PROJECT_NAME: my_project
+
+build_and_push_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $DOCKER_REGISTRY
+  script:
+    # Replace forward slashes with hyphens for valid Docker tags
+    - export SAFE_BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed 's/\//-/g')
+    - docker build -f "Dockerfile" -t "$CI_REGISTRY_IMAGE/$PROJECT_NAME:$SAFE_BRANCH_NAME" .
+    - docker push "$CI_REGISTRY_IMAGE/$PROJECT_NAME:$SAFE_BRANCH_NAME"
+    # Also tag and push as 'latest' if on main branch
+    - |
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        docker tag "$CI_REGISTRY_IMAGE/$PROJECT_NAME:$SAFE_BRANCH_NAME" "$CI_REGISTRY_IMAGE/$PROJECT_NAME:latest"
+        docker push "$CI_REGISTRY_IMAGE/$PROJECT_NAME:latest"
+      fi
