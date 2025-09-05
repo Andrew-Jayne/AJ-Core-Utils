@@ -1,10 +1,7 @@
 from os import environ
-from typing import TypeVar
-
-INPUT_TYPE = TypeVar("INPUT_TYPE")
 
 
-def _convert_value(
+def _convert_value[INPUT_TYPE](
     value: str,
     var_name: str,
     return_type: type[INPUT_TYPE],
@@ -45,7 +42,7 @@ def _convert_value(
         ) from e
 
 
-def load_optional_var(
+def load_optional_var[INPUT_TYPE](
     var_name: str,
     default_value: INPUT_TYPE,
     *,
@@ -57,7 +54,7 @@ def load_optional_var(
     return _convert_value(value, var_name, return_type=return_type)
 
 
-def load_mandatory_var(
+def load_mandatory_var[INPUT_TYPE](
     var_name: str,
     *,
     return_type: type[INPUT_TYPE] = str,
