@@ -1,5 +1,5 @@
 from os import environ
-from typing import Type, TypeVar
+from typing import TypeVar
 
 INPUT_TYPE = TypeVar("INPUT_TYPE")
 
@@ -7,7 +7,7 @@ INPUT_TYPE = TypeVar("INPUT_TYPE")
 def _convert_value(
     value: str,
     var_name: str,
-    return_type: Type[INPUT_TYPE],
+    return_type: type[INPUT_TYPE],
 ) -> INPUT_TYPE:
     """Convert an input string value to the specified type."""
     try:
@@ -49,7 +49,7 @@ def load_optional_var(
     var_name: str,
     default_value: INPUT_TYPE,
     *,
-    return_type: Type[INPUT_TYPE] = str,
+    return_type: type[INPUT_TYPE] = str,
 ) -> INPUT_TYPE:
     value = environ.get(var_name, None)
     if value is None:
@@ -60,7 +60,7 @@ def load_optional_var(
 def load_mandatory_var(
     var_name: str,
     *,
-    return_type: Type[INPUT_TYPE] = str,
+    return_type: type[INPUT_TYPE] = str,
 ) -> INPUT_TYPE:
     try:
         value = environ[var_name]
